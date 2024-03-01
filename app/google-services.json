@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "111664811358",
+    "project_id": "interlinktual",
+    "storage_bucket": "interlinktual.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:111664811358:android:f192864e5c8e8538e853cf",
+        "android_client_info": {
+          "package_name": "com.android.application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdaBBULHYAYzOT7_HioD7BAjywbragccw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:111664811358:android:5df8f1340c02471be853cf",
+        "android_client_info": {
+          "package_name": "com.leviness.intellinktualapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdaBBULHYAYzOT7_HioD7BAjywbragccw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
