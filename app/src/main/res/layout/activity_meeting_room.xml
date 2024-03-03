@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cream"
+    tools:context=".MeetingRoomActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/meetingRoom_toolBar"
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        android:background="@color/cyan"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/meetingRoom_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/abril_fatface"
+        android:text="Meeting Room"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#FFFFFF"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="@+id/meetingRoom_toolBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/meetingRoom_toolBar" />
+
+    <ImageButton
+        android:id="@+id/meetingRoom_Home"
+        android:layout_width="55dp"
+        android:layout_height="53dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/cyan"
+        android:contentDescription="Home Button"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@+id/meetingRoom_toolBar"
+        app:layout_constraintEnd_toStartOf="@+id/meetingRoom_tv"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/meetingRoom_toolBar"
+        app:srcCompat="@drawable/white_home_icon_png_9" />
+</androidx.constraintlayout.widget.ConstraintLayout>

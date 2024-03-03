@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cream"
+    tools:context=".flashCardActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/flashCard_toolBar"
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="1dp"
+        android:background="@color/cyan"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/flashCard_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/abril_fatface"
+        android:text="Flash Card Library"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/white"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="@+id/flashCard_toolBar"
+        app:layout_constraintEnd_toEndOf="@+id/flashCard_toolBar"
+        app:layout_constraintHorizontal_bias="0.778"
+        app:layout_constraintStart_toStartOf="@+id/flashCard_toolBar"
+        app:layout_constraintTop_toTopOf="@+id/flashCard_toolBar"
+        app:layout_constraintVertical_bias="0.333"
+        tools:text="Flash Card Library" />
+
+    <ImageButton
+        android:id="@+id/flashCardHome"
+        android:layout_width="72dp"
+        android:layout_height="51dp"
+        android:background="@color/cyan"
+        android:contentDescription="home button"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@+id/flashCard_toolBar"
+        app:layout_constraintEnd_toStartOf="@+id/flashCard_tv"
+        app:layout_constraintHorizontal_bias="0.058"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.461"
+        app:srcCompat="@drawable/white_home_icon_png_9" />
+
+    <Spinner
+        android:id="@+id/flashCard_spinner"
+        android:layout_width="404dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flashCard_toolBar" />
+
+    <ImageButton
+        android:id="@+id/add_flashCard_button"
+        android:layout_width="68dp"
+        android:layout_height="70dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/cream"
+        android:contentDescription="Add Flash Card"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/cyanplus" />
+</androidx.constraintlayout.widget.ConstraintLayout>
