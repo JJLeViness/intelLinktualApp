@@ -17,6 +17,7 @@ public class DocumentActivity extends AppCompatActivity {
 
         //Button Declarations
         ImageButton documentsHome=findViewById(R.id.document_home);
+        ImageButton launchCamera = findViewById(R.id.document_camera);
 
         documentsHome.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -24,6 +25,14 @@ public class DocumentActivity extends AppCompatActivity {
                 Intent homeIntent = new Intent(DocumentActivity.this, HomeActivity.class);
                 startActivity(homeIntent);
 
+            }
+        });
+
+        launchCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cameraIntent = new Intent(DocumentActivity.this, cameraActivity.class);
+                startActivity(cameraIntent);
             }
         });
     }
