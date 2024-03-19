@@ -37,13 +37,14 @@ public class cameraActivity extends AppCompatActivity {
         @Override
         public void onActivityResult(Boolean o) {
             if(o){
-                //startCamera(cameraFacing);
+                startCamera(cameraFacing);
             }
         }
     });
 
    private ImageButton takePicture,pictureDone;
    private  PreviewView documentView;
+   private ImageCapture imageCapture;
 
 
 
@@ -62,82 +63,67 @@ public class cameraActivity extends AppCompatActivity {
 
         }
         else{
-            //startCamera(cameraFacing);
+            startCamera(cameraFacing);
+
         }
-    }
-
-    /*public void startCamera(int cameraFacing){
-        //int aspectRatio = aspectRatio(documentView.getWidth(),documentView.getHeight());
-        ListenableFuture<ProcessCameraProvider> listenableFuture = ProcessCameraProvider.getInstance(this);
-
-        listenableFuture.addListener(new Runnable() {
+        takePicture.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                try{
-                    ProcessCameraProvider cameraProvider = (ProcessCameraProvider) listenableFuture.get();
-
-                    Preview preview = new Preview.Builder().setTargetAspectRatio(aspectRatio).build();
-                    ImageCapture imageCapture = new ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY).setTargetRotation(getWindowManager().getDefaultDisplay().getRotation()).build();
-                    CameraSelector cameraSelector = new CameraSelector.Builder().requireLensFacing(cameraFacing).build();
-                    cameraProvider.unbindAll();
-
-                    Camera camera = cameraProvider.bindToLifecycle(this,cameraSelector,preview,imageCapture);
-
-                    takePicture.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(ContextCompat.checkSelfPermission(cameraActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
-                                activityResultLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                            }
-                            else{
-                                takePicture(imageCapture);
-                            }
-
-                        }
-                    });
-
-                    preview.setSurfaceProvider(documentView.getSurfaceProvider());
-                } catch (ExecutionException|InterruptedException e) {
-                    e.printStackTrace();
+            public void onClick(View v) {
+                if(imageCapture!=null){
+                    takePicture();
                 }
             }
         });
-    }*/
+    }
+    private void startCamera(int cameraFacing) {
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
+        cameraProviderFuture.addListener(() -> {
+            try {
+                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                bindPreview(cameraProvider);
+                bindImageCapture(cameraProvider);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }, ContextCompat.getMainExecutor(this));
+    }
+    private void bindPreview(ProcessCameraProvider cameraProvider) {
+        Preview preview = new Preview.Builder().build();
+        CameraSelector cameraSelector = new CameraSelector.Builder()
+                .requireLensFacing(cameraFacing)
+                .build();
 
-    public void takePicture(ImageCapture imageCapture){
-        final File file = new File(getExternalFilesDir(null),System.currentTimeMillis()+".jpeg");
-        ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions.Builder(file).build();
+        preview.setSurfaceProvider(documentView.getSurfaceProvider());
+        cameraProvider.bindToLifecycle(this, cameraSelector, preview);
+    }
+    private void bindImageCapture(ProcessCameraProvider cameraProvider) {
+        imageCapture = new ImageCapture.Builder().build();
+    }
 
-        imageCapture.takePicture(outputFileOptions, Executors.newCachedThreadPool(), new ImageCapture.OnImageSavedCallback() {
-            @Override
-            public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                runOnUiThread(new Runnable() {
+
+    private void takePicture() {
+        File photoFile = new File(getFilesDir(), "photo.jpg");
+
+        ImageCapture.OutputFileOptions outputFileOptions =
+                new ImageCapture.OutputFileOptions.Builder(photoFile).build();
+
+        imageCapture.takePicture(outputFileOptions, ContextCompat.getMainExecutor(this),
+                new ImageCapture.OnImageSavedCallback() {
                     @Override
-                    public void run() {
-                        Toast.makeText(cameraActivity.this,"Image Saved"+file.getPath(),Toast.LENGTH_SHORT).show();
+                    public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                        Toast.makeText(cameraActivity.this, "Image saved: " + photoFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                    }
 
-
+                    @Override
+                    public void onError(@NonNull ImageCaptureException exception) {
+                        Toast.makeText(cameraActivity.this, "Error saving image", Toast.LENGTH_SHORT).show();
+                        exception.printStackTrace();
                     }
                 });
-               // startCamera(cameraFacing);
-            }
-
-            @Override
-            public void onError(@NonNull ImageCaptureException exception) {
-
-            }
-        });
     }
-
-    private int aspectRatio(int width, int height) {
-
-        double previewRatio = (double) Math.max(width, height)/Math.min(width, height);
-
-        if(Math.abs(previewRatio-4.0/3.0)<=Math.abs(previewRatio-16.0/9.0)){
-            return AspectRatio.RATIO_4_3;
-        }
-        return AspectRatio.RATIO_16_9;
-    }
-
-
 }
+
+
+
+
+
