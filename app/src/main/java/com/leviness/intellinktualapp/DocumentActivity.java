@@ -67,7 +67,7 @@ public class DocumentActivity extends AppCompatActivity {
 
 
         } else {
-            // Show a message or placeholder image if the list is empty
+
             imageList.setVisibility(View.GONE); // Hide RecyclerView
 
         }
