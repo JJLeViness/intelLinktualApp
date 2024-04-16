@@ -54,8 +54,7 @@ public class DocumentActivity extends AppCompatActivity {
                 @Override
                 public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
                     ImageView imageView = (ImageView) holder.itemView;
-                    // Load image into ImageView using a library like Glide or Picasso
-                    // For simplicity, we'll just set the image path directly
+
                     imageView.setImageURI(Uri.fromFile(capturedImages.get(position)));
                 }
 
