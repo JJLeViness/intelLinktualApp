@@ -40,7 +40,7 @@ public class cameraActivity extends AppCompatActivity {
 
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
     private int cameraFacing = CameraSelector.LENS_FACING_BACK;
-    private List<File> capturedImages = new ArrayList<>();
+    private List<String> capturedImages = new ArrayList<>();
     private ImageButton takePicture;
     private ImageButton pictureDone;
     private PreviewView documentView;
@@ -72,7 +72,7 @@ public class cameraActivity extends AppCompatActivity {
 
         pictureDone.setOnClickListener(v -> {
             Intent intent = new Intent(cameraActivity.this, DocumentActivity.class);
-            intent.putExtra("capturedImages", new ArrayList<>(capturedImages));
+            intent.putStringArrayListExtra("capturedImagePaths", new ArrayList<>(capturedImages));
             startActivity(intent);
         });
 
@@ -128,7 +128,7 @@ public class cameraActivity extends AppCompatActivity {
         imageCapture.takePicture(outputFileOptions, ContextCompat.getMainExecutor(this), new ImageCapture.OnImageSavedCallback() {
             @Override
             public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                capturedImages.add(photoFile); // Make sure capturedImages is properly initialized.
+                capturedImages.add(photoFile.getAbsolutePath());
                 Toast.makeText(cameraActivity.this, "Photo saved", Toast.LENGTH_SHORT).show();
             }
 

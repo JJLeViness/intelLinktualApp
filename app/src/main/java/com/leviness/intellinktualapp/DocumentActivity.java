@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,7 +29,7 @@ public class DocumentActivity extends AppCompatActivity {
         setContentView(R.layout.document_activity);
 
         // Retrieve captured images from Intent extras
-        List<File> capturedImages = getIntent().getParcelableExtra("capturedImages");
+        List<String> capturedImagePaths = getIntent().getStringArrayListExtra("capturedImagePaths");
 
         // Button Declarations
         ImageButton documentsHome = findViewById(R.id.document_home);
@@ -38,33 +40,28 @@ public class DocumentActivity extends AppCompatActivity {
         // Initialize RecyclerView
         imageList.setLayoutManager(new LinearLayoutManager(this));
 
-        if (capturedImages != null && !capturedImages.isEmpty()) {
+        if (capturedImagePaths != null && !capturedImagePaths.isEmpty()) {
             // Set RecyclerView adapter if list is not empty
-            imageList.setAdapter(new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+            imageList.setAdapter(new RecyclerView.Adapter<ImageViewHolder>() {
                 @NonNull
                 @Override
-                public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                    ImageView imageView = new ImageView(parent.getContext());
-                    imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    imageView.setAdjustViewBounds(true);
-                    imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                    return new RecyclerView.ViewHolder(imageView) {};
+                public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                    View itemView = getLayoutInflater().inflate(R.layout.item_image, parent, false);
+                    return new ImageViewHolder(itemView);
                 }
 
                 @Override
-                public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-                    ImageView imageView = (ImageView) holder.itemView;
-
-                    imageView.setImageURI(Uri.fromFile(capturedImages.get(position)));
+                public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
+                    String imagePath = capturedImagePaths.get(position);
+                    Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+                    holder.imageView.setImageBitmap(bitmap);
                 }
 
                 @Override
                 public int getItemCount() {
-                    return capturedImages.size();
+                    return capturedImagePaths.size();
                 }
             });
-
-
         } else {
 
             imageList.setVisibility(View.GONE); // Hide RecyclerView
@@ -87,5 +84,17 @@ public class DocumentActivity extends AppCompatActivity {
                 startActivity(cameraIntent);
             }
         });
+
+
+
+
+    }
+    private static class ImageViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageView;
+
+        ImageViewHolder(View itemView) {
+            super(itemView);
+            imageView = itemView.findViewById(R.id.imageView);
+        }
     }
 }
