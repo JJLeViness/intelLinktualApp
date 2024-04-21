@@ -9,12 +9,12 @@ public class flashCard {
         this.answer = answer;
     }
 
-    public static String getQuestion() {
+    public  String getQuestion() {
         return question;
     }
 
-    public static String getAnswer() {
-        return answer;
+    public String getAnswer() {
+        return this.answer;
     }
 
     public void setQuestion(String question) {
