@@ -27,17 +27,16 @@ public class flashCardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flash_card);
 
-        //declare buttons
+        // Declare RecyclerView and other views
+        RecyclerView flashCardRV = findViewById(R.id.flashCard_RV);
         ImageButton homeButton = findViewById(R.id.flashCardHome);
-         RecyclerView flashCard = findViewById(R.id.flashCard_RV);
-         flashCard.setLayoutManager(new LinearLayoutManager(this));
-         flashCards = createSampleFlashcards();
+        ImageButton addFlashcard = findViewById(R.id.add_flashCard_button);
 
-        adapter = new FlashcardAdapter( flashCards);
-        flashCard.setAdapter(adapter);
+        flashCards = createSampleFlashcards(); // Method to create sample flashcards
 
-
-
+        adapter = new FlashcardAdapter(flashCards);
+        flashCardRV.setAdapter(adapter);
+        flashCardRV.setLayoutManager(new LinearLayoutManager(this));
 
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,25 +46,33 @@ public class flashCardActivity extends AppCompatActivity {
             }
         });
     }
-    public class FlashcardAdapter extends RecyclerView.Adapter<FlashcardAdapter.FlashcardViewHolder> {
 
+
+    public List<flashCard> createSampleFlashcards() {
+        List<flashCard> flashCards = new ArrayList<>();
+        flashCards.add(new flashCard("Question 1", "Answer 1"));
+        flashCards.add(new flashCard("Question 2", "Answer 2"));
+        return flashCards;
+    }
+
+    public static class FlashcardAdapter extends RecyclerView.Adapter<FlashcardAdapter.FlashcardViewHolder> {
         private List<flashCard> flashcards;
 
         public FlashcardAdapter(List<flashCard> flashcards) {
             this.flashcards = flashcards;
         }
 
-        @NonNull
         @Override
-        public FlashcardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public FlashcardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_flashcard, parent, false);
             return new FlashcardViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull FlashcardViewHolder holder, int position) {
+        public void onBindViewHolder(FlashcardViewHolder holder, int position) {
             flashCard flashcard = flashcards.get(position);
-            holder.bind(flashcard);
+            holder.questionTextView.setText(flashcard.getQuestion());
+            holder.answerTextView.setText(flashcard.getAnswer());
         }
 
         @Override
@@ -73,27 +80,34 @@ public class flashCardActivity extends AppCompatActivity {
             return flashcards.size();
         }
 
-        public class FlashcardViewHolder extends RecyclerView.ViewHolder {
+        public static class FlashcardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             private TextView questionTextView;
             private TextView answerTextView;
+            private boolean isFront = true;
 
             public FlashcardViewHolder(@NonNull View itemView) {
                 super(itemView);
                 questionTextView = itemView.findViewById(R.id.questionTextView);
                 answerTextView = itemView.findViewById(R.id.answerTextView);
+                itemView.setOnClickListener(this);
+            }
+
+            @Override
+            public void onClick(View v) {
+                if (isFront) {
+                    answerTextView.setVisibility(View.VISIBLE);
+                    isFront = false;
+                } else {
+                    answerTextView.setVisibility(View.GONE);
+                    isFront = true;
+                }
             }
 
             public void bind(flashCard flashcard) {
                 questionTextView.setText(flashcard.getQuestion());
                 answerTextView.setText(flashcard.getAnswer());
             }
-
         }
-    }
-    public List<flashCard> createSampleFlashcards(){
-        List<flashCard> flashCards = new ArrayList<>();
-        flashCards.add(new flashCard("Question 1", "Answer 1"));
-        flashCards.add(new flashCard("Question 2", "Answer 2"));
-        return flashCards;
+
     }
 }

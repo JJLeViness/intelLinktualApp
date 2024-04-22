@@ -42,7 +42,7 @@
         android:layout_width="72dp"
         android:layout_height="51dp"
         android:background="@color/cyan"
-        android:contentDescription="home button"
+        android:contentDescription="home"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="@+id/flashCard_toolBar"
         app:layout_constraintEnd_toStartOf="@+id/flashCard_tv"
