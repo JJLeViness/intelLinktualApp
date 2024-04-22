@@ -89,6 +89,7 @@ public class flashCardActivity extends AppCompatActivity {
                 super(itemView);
                 questionTextView = itemView.findViewById(R.id.questionTextView);
                 answerTextView = itemView.findViewById(R.id.answerTextView);
+                answerTextView.setVisibility(View.GONE);
                 itemView.setOnClickListener(this);
             }
 
