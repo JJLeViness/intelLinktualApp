@@ -74,10 +74,18 @@ public class MeetingRoomActivity extends AppCompatActivity {
     private void sendMessage() {
         String messageText = messageInput.getText().toString().trim();
         if (!messageText.isEmpty()) {
+            // Add the message to the list
+            Message message = new Message(messageText);
+            messageList.add(message);
+            adapter.notifyItemInserted(messageList.size() - 1);
+
+            // Send the message via FCM
             FirebaseMessaging.getInstance().send(new RemoteMessage.Builder("meetingRoom")
                     .setMessageId(Integer.toString(new Random().nextInt()))
                     .setData(Collections.singletonMap("message", messageText))
                     .build());
+
+            // Clear the input field
             messageInput.setText("");
         }
     }
