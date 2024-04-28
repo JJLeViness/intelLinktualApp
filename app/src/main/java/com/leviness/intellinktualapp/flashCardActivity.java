@@ -23,7 +23,7 @@ import java.util.List;
 public class flashCardActivity extends AppCompatActivity {
 
     FlashcardAdapter adapter;
-    List<flashCard> flashCards;
+    List<flashCard> flashCards = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +35,19 @@ public class flashCardActivity extends AppCompatActivity {
         ImageButton homeButton = findViewById(R.id.flashCardHome);
         ImageButton addFlashcard = findViewById(R.id.add_flashCard_button);
 
-        flashCards = createSampleFlashcards(); // Method to create sample flashcards
+
+
+
+        flashCards = createSampleFlashcards();
+
 
         adapter = new FlashcardAdapter(flashCards);
         flashCardRV.setAdapter(adapter);
         flashCardRV.setLayoutManager(new LinearLayoutManager(this));
+
+
+
+
 
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,6 +108,7 @@ public class flashCardActivity extends AppCompatActivity {
         flashCards.add(new flashCard("Question 2", "Answer 2"));
         return flashCards;
     }
+
 
     public static class FlashcardAdapter extends RecyclerView.Adapter<FlashcardAdapter.FlashcardViewHolder> {
         private List<flashCard> flashcards;

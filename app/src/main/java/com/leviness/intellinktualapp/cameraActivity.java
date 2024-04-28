@@ -18,9 +18,11 @@ import androidx.lifecycle.LifecycleOwner;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -32,7 +34,9 @@ import com.google.firebase.database.core.Tag;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
@@ -40,6 +44,8 @@ public class cameraActivity extends AppCompatActivity {
 
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
     private int cameraFacing = CameraSelector.LENS_FACING_BACK;
+
+
     private List<String> capturedImages = new ArrayList<>();
     private ImageButton takePicture;
     private ImageButton pictureDone;
@@ -64,6 +70,7 @@ public class cameraActivity extends AppCompatActivity {
         pictureDone = findViewById(R.id.camera_check_button);
         documentView = findViewById(R.id.camera_preview);
 
+
         if (ContextCompat.checkSelfPermission(cameraActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             cameraPermissionLauncher.launch(Manifest.permission.CAMERA);
         } else {
@@ -71,6 +78,7 @@ public class cameraActivity extends AppCompatActivity {
         }
 
         pictureDone.setOnClickListener(v -> {
+
             Intent intent = new Intent(cameraActivity.this, DocumentActivity.class);
             intent.putStringArrayListExtra("capturedImagePaths", new ArrayList<>(capturedImages));
             startActivity(intent);
@@ -138,6 +146,7 @@ public class cameraActivity extends AppCompatActivity {
             }
         });
     }
+
 }
 
 

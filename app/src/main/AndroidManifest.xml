@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -24,6 +28,8 @@
         <activity
             android:name=".DocumentActivity"
             android:exported="true" />
+        <activity android:name=".cameraActivity"
+            android:exported="true"/>
         <activity
             android:name=".HomeActivity"
             android:exported="true"
@@ -40,6 +46,14 @@
             android:exported="true"
             android:label="intelLinktual"
             android:theme="@style/Theme.IntelLinktualApp" />
+
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <meta-data
             android:name="preloaded_fonts"
