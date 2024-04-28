@@ -38,11 +38,13 @@
             android:id="@+id/addEvent_imageButton"
             android:layout_width="60dp"
             android:layout_height="51dp"
+            android:background="@color/cyan"
+            android:scaleType="fitXY"
             app:layout_constraintBottom_toBottomOf="@+id/AddEvent_TV"
             app:layout_constraintEnd_toEndOf="@+id/AddEvent_toolbar"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/AddEvent_TV"
-            app:srcCompat="@android:drawable/checkbox_on_background" />
+            app:srcCompat="@drawable/baseline_check_24" />
 
         <TextView
             android:id="@+id/Date_TV"

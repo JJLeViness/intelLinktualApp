@@ -5,8 +5,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +22,10 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,6 +41,11 @@ public class CalendarActivity extends AppCompatActivity {
     private ArrayAdapter<String> eventAdapter;
     private Map<String, List<String>> eventMap;
 
+    SharedPreferences sharedPreferences;
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,10 +55,19 @@ public class CalendarActivity extends AppCompatActivity {
         CalendarView eventCalendar = findViewById(R.id.meeting_cv);
         ImageButton addEvent = findViewById(R.id.addEvent_button);
         ListView eventList = findViewById(R.id.calendar_Lv);
+        sharedPreferences = getSharedPreferences("MyEvents", MODE_PRIVATE);
 
         // Initialize the adapter for the ListView
         eventAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         eventList.setAdapter(eventAdapter);
+
+        eventList.setOnItemClickListener((adapterView, view, position, id) -> {
+            String selectedDate = getDateFromCalendar();
+            String eventToDelete = eventAdapter.getItem(position);
+            showConfirmationDialog(selectedDate, eventToDelete);
+        });
+
+
 
         // Initialize event map
         eventMap = new HashMap<>();
@@ -84,20 +105,13 @@ public class CalendarActivity extends AppCompatActivity {
                         String eventDate = eventDateEditText.getText().toString();
                         String eventTime = eventTimeEditText.getText().toString();
 
-                        // Convert eventDate to Date object
-                        // Add event to the list for the selected date
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
 
-                        Date selectedDate = null;
-                        try {
-                            selectedDate = dateFormat.parse(eventDate);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        addEventToList(String.valueOf(selectedDate), eventName);
+                        addEventToList(eventDate, eventName,eventTime);
+
+
 
                         // Update the event list for the selected date
-                        updateEventList(String.valueOf(selectedDate));
+                        updateEventList(eventDate);
 
                         // Dismiss the pop-up window after adding the event
                         alertDialog.dismiss();
@@ -106,29 +120,94 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
     }
-    // Method to update the ListView with events for the selected date
+
     private void updateEventList(String selectedDate) {
+        List<String> events = getEvents(selectedDate);
         eventAdapter.clear();
-        List<String> events = eventMap.get(selectedDate);
         if (events != null && !events.isEmpty()) {
             eventAdapter.addAll(events);
         } else {
             eventAdapter.add("No events scheduled for this date.");
         }
+
+        Log.d("CalendarActivity", "Events for date " + selectedDate + ": " + events);
+
     }
 
-    // Method to add event to the calendar list
-    private void addEventToList(String date, String eventName) {
-        List<String> events = eventMap.get(date);
+
+    private void addEventToList(String selectedDate, String eventName,String eventTime) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+
+        List<String> events = getEvents(selectedDate);
         if (events == null) {
             events = new ArrayList<>();
-            eventMap.put(date, events);
         }
-        events.add(eventName);
+
+        String event = eventName + " at " + eventTime;
+        events.add(event);
+
+        String eventsJson = gson.toJson(events);
+        editor.putString(selectedDate, eventsJson);
+        editor.apply();
+
+        Log.d("CalendarActivity", "Event added to date " + selectedDate + ": " + eventName);
+    }
+    private List<String> getEvents(String selectedDate) {
+        String eventsJson = sharedPreferences.getString(selectedDate, null);
+        if (eventsJson != null) {
+            Gson gson = new Gson();
+            Type type = new TypeToken<List<String>>() {}.getType();
+            return gson.fromJson(eventsJson, type);
+        }
+        return null;
     }
 
-    // Method to convert year, month, and day to a date string
+
+    private void deleteEvent(String selectedDate, String eventToDelete) {
+        List<String> events = getEvents(selectedDate);
+        if (events != null) {
+            events.remove(eventToDelete);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            Gson gson = new Gson();
+            String eventsJson = gson.toJson(events);
+            editor.putString(selectedDate, eventsJson);
+            editor.apply();
+            Log.d("CalendarActivity", "Event deleted from date " + selectedDate + ": " + eventToDelete);
+        }
+        // Update the event list for the selected date
+        updateEventList(selectedDate);
+    }
+
+
+
+
+    private void showConfirmationDialog(final String selectedDate, final String eventToDelete) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to delete this event?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        deleteEvent(selectedDate, eventToDelete);
+                        updateEventList(selectedDate);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.create().show();
+    }
+    private String getDateFromCalendar() {
+        CalendarView eventCalendar = findViewById(R.id.meeting_cv);
+        long selectedDateMillis = eventCalendar.getDate();
+        Date selectedDate = new Date(selectedDateMillis);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+        return dateFormat.format(selectedDate);
+    }
+
+
     private String getDate(int year, int month, int dayOfMonth) {
-        return year + "-" + String.format(Locale.getDefault(), "%02d", (month + 1)) + "-" + String.format(Locale.getDefault(), "%02d", dayOfMonth);
+        return String.format(Locale.getDefault(), "%02d/%02d/%04d", (month + 1), dayOfMonth, year);
     }
 }
