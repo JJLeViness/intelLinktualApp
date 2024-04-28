@@ -35,7 +35,7 @@ public class DocumentActivity extends AppCompatActivity {
         setContentView(R.layout.document_activity);
 
         // Retrieve captured images from Intent extras
-        List<String> capturedImagePaths = getIntent().getStringArrayListExtra("capturedImagePaths");
+        List<String> capturedImagePaths = getImagePathsFromSharedPreferences();
 
         // Button Declarations
         ImageButton documentsHome = findViewById(R.id.document_home);
@@ -47,6 +47,8 @@ public class DocumentActivity extends AppCompatActivity {
         imageList.setLayoutManager(new LinearLayoutManager(this));
 
         if (capturedImagePaths != null && !capturedImagePaths.isEmpty()) {
+
+
             // Set RecyclerView adapter if list is not empty
             imageList.setAdapter(new RecyclerView.Adapter<ImageViewHolder>() {
                 @NonNull
@@ -60,7 +62,29 @@ public class DocumentActivity extends AppCompatActivity {
                 public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
                     String imagePath = capturedImagePaths.get(position);
                     Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+
                     holder.imageView.setImageBitmap(bitmap);
+                    holder.delete.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String deletedImagePath = capturedImagePaths.remove(position);
+
+                            // Delete the image file from internal storage
+                            File deletedImageFile = new File(deletedImagePath);
+                            boolean isDeleted = deletedImageFile.delete();
+
+                            if (isDeleted) {
+                                // Update RecyclerView after deletion
+                                notifyItemRemoved(position);
+                                if (capturedImagePaths.isEmpty()) {
+                                    imageList.setVisibility(View.GONE); // Hide RecyclerView if list is empty
+                                }
+                            }
+
+                        }
+                    });
+
+
                 }
 
                 @Override
@@ -73,6 +97,8 @@ public class DocumentActivity extends AppCompatActivity {
             imageList.setVisibility(View.GONE); // Hide RecyclerView
 
         }
+
+
 
         // Click listeners for buttons
         documentsHome.setOnClickListener(new View.OnClickListener() {
@@ -91,17 +117,29 @@ public class DocumentActivity extends AppCompatActivity {
             }
         });
 
-
-
-
     }
+
+
     private static class ImageViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
+        ImageButton delete;
 
         ImageViewHolder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
+            delete = itemView.findViewById(R.id.imagedelete);
+
         }
     }
+
+
+    private List<String> getImagePathsFromSharedPreferences() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Set<String> imagePathSet = preferences.getStringSet("capturedImagePaths", new HashSet<>());
+        return new ArrayList<>(imagePathSet);
+    }
+
+
+
 
 }

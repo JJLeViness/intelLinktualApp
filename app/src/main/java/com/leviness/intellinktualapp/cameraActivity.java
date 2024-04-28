@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -32,6 +33,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.database.core.Tag;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -127,9 +130,23 @@ public class cameraActivity extends AppCompatActivity {
         Camera camera = cameraProvider.bindToLifecycle((LifecycleOwner)this, cameraSelector, imageCapture);
     }
 
+    private void saveImagePathsToSharedPreferences(List<String> imagePaths) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        Set<String> imagePathSet = new HashSet<>(imagePaths);
+        editor.putStringSet("capturedImagePaths", imagePathSet);
+        editor.apply();
+    }
+
+
+
+
 
     private void takePicture() {
-        File photoFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "photo_" + System.currentTimeMillis() + ".jpg");
+        //File photoFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "photo_" + System.currentTimeMillis() + ".jpg");
+
+        File storageDir = getFilesDir(); // Get the app's internal storage directory
+        File photoFile = new File(storageDir, "photo_" + System.currentTimeMillis() + ".jpg");
 
         ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions.Builder(photoFile).build();
 
@@ -137,6 +154,7 @@ public class cameraActivity extends AppCompatActivity {
             @Override
             public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                 capturedImages.add(photoFile.getAbsolutePath());
+                saveImagePathsToSharedPreferences(capturedImages);
                 Toast.makeText(cameraActivity.this, "Photo saved", Toast.LENGTH_SHORT).show();
             }
 
@@ -145,6 +163,10 @@ public class cameraActivity extends AppCompatActivity {
                 Toast.makeText(cameraActivity.this, "Photo capture failed: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
+
+
+
     }
 
 }
