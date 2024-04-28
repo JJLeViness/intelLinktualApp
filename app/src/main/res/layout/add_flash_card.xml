@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/cream">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/addflashcard_tb"
+            android:layout_width="409dp"
+            android:layout_height="wrap_content"
+            android:background="@color/cyan"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/addflashcarddone_ib"
+            android:layout_width="73dp"
+            android:layout_height="59dp"
+            android:background="@color/cyan"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="@+id/addflashcard_tb"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.994"
+            app:layout_constraintStart_toStartOf="@+id/addflashcard_tb"
+            app:srcCompat="@drawable/baseline_check_24" />
+
+        <EditText
+            android:id="@+id/question_ET"
+            android:layout_width="229dp"
+            android:layout_height="65dp"
+            android:layout_marginTop="184dp"
+            android:layout_marginEnd="100dp"
+            android:ems="10"
+            android:inputType="text"
+            android:text="Enter Question"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addflashcard_tb" />
+
+        <EditText
+            android:id="@+id/Answer_ET"
+            android:layout_width="218dp"
+            android:layout_height="58dp"
+            android:layout_marginTop="72dp"
+            android:layout_marginEnd="100dp"
+            android:ems="10"
+            android:inputType="text"
+            android:text="Enter Answer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/question_ET" />
+
+        <TextView
+            android:id="@+id/AddFlashCard_TV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="72dp"
+            android:layout_marginEnd="100dp"
+            android:fontFamily="@font/abril_fatface"
+            android:text="Add Flash Card"
+            android:textSize="34sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addflashcard_tb" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
