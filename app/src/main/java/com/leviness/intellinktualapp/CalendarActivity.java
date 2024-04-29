@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -55,6 +56,7 @@ public class CalendarActivity extends AppCompatActivity {
         CalendarView eventCalendar = findViewById(R.id.meeting_cv);
         ImageButton addEvent = findViewById(R.id.addEvent_button);
         ListView eventList = findViewById(R.id.calendar_Lv);
+        ImageButton export = findViewById(R.id.calendar_export);
         sharedPreferences = getSharedPreferences("MyEvents", MODE_PRIVATE);
 
         // Initialize the adapter for the ListView
@@ -81,6 +83,27 @@ public class CalendarActivity extends AppCompatActivity {
         calendarHome.setOnClickListener(v -> {
             Intent homeIntent = new Intent(CalendarActivity.this, HomeActivity.class);
             startActivity(homeIntent);
+        });
+
+        export.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Map<String, ?> allEntries = sharedPreferences.getAll();
+                for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                    String date = entry.getKey();
+                    List<String> events = getEvents(date);
+                    if (events != null && !events.isEmpty()) {
+                        // Export each event associated with the date to the device's calendar
+                        for (String event : events) {
+                            exportToCalendar(date, event);
+                        }
+                    }
+                }
+
+
+
+            }
         });
 
         addEvent.setOnClickListener(new View.OnClickListener() {
@@ -198,6 +221,14 @@ public class CalendarActivity extends AppCompatActivity {
                 });
         builder.create().show();
     }
+    private void exportToCalendar(String selectedDate, String eventTitle) {
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setData(CalendarContract.Events.CONTENT_URI);
+        intent.putExtra(CalendarContract.Events.TITLE, eventTitle);
+        startActivity(intent);
+    }
+
+
     private String getDateFromCalendar() {
         CalendarView eventCalendar = findViewById(R.id.meeting_cv);
         long selectedDateMillis = eventCalendar.getDate();
