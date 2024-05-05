@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +36,8 @@ public class flashCardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flash_card);
 
+        loadFlashcards();
+
         // Declare RecyclerView and other views
         RecyclerView flashCardRV = findViewById(R.id.flashCard_RV);
         ImageButton homeButton = findViewById(R.id.flashCardHome);
@@ -38,7 +46,7 @@ public class flashCardActivity extends AppCompatActivity {
 
 
 
-        flashCards = createSampleFlashcards();
+        flashCards = loadFlashcards();
 
 
         adapter = new FlashcardAdapter(flashCards);
@@ -87,6 +95,8 @@ public class flashCardActivity extends AppCompatActivity {
                             flashCards.add(newFlashcard);
                             adapter.notifyDataSetChanged();
 
+                            saveFlashcards();
+
 
                             dialog.dismiss();
                         } else {
@@ -100,6 +110,31 @@ public class flashCardActivity extends AppCompatActivity {
             }
         });
     }
+
+    private List<flashCard> loadFlashcards() {
+        SharedPreferences sharedPreferences = getSharedPreferences("Flashcards", Context.MODE_PRIVATE);
+        String flashcardsJson = sharedPreferences.getString("flashcards", null);
+        List<flashCard> loadedFlashcards = new ArrayList<>();
+        if (flashcardsJson != null) {
+            Gson gson = new Gson();
+            Type type = new TypeToken<List<flashCard>>() {}.getType();
+            loadedFlashcards = gson.fromJson(flashcardsJson, type);
+        }
+        return loadedFlashcards;
+    }
+
+
+
+    private void saveFlashcards() {
+        SharedPreferences sharedPreferences = getSharedPreferences("Flashcards", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String flashcardsJson = gson.toJson(flashCards);
+        editor.putString("flashcards", flashcardsJson);
+        editor.apply();
+    }
+
+
 
 
     public List<flashCard> createSampleFlashcards() {

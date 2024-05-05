@@ -61,14 +61,10 @@
         android:id="@+id/editTextMessage"
         android:layout_width="310dp"
         android:layout_height="63dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="52dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="50dp"
         android:hint="Type your message here..."
-        app:layout_constraintEnd_toStartOf="@+id/buttonSend"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/meetingRoom_toolBar" />
+        app:layout_constraintBottom_toTopOf="@+id/buttonSend"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/buttonSend"
@@ -85,9 +81,9 @@
         android:id="@+id/recyclerViewMessages"
         android:layout_width="409dp"
         android:layout_height="430dp"
-        android:layout_marginStart="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonSend"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextMessage" />
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/editTextMessage"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

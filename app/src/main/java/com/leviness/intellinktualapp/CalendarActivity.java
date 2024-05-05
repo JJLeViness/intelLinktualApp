@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -56,7 +57,7 @@ public class CalendarActivity extends AppCompatActivity {
         CalendarView eventCalendar = findViewById(R.id.meeting_cv);
         ImageButton addEvent = findViewById(R.id.addEvent_button);
         ListView eventList = findViewById(R.id.calendar_Lv);
-        ImageButton export = findViewById(R.id.calendar_export);
+        Button export = findViewById(R.id.calendar_export);
         sharedPreferences = getSharedPreferences("MyEvents", MODE_PRIVATE);
 
         // Initialize the adapter for the ListView
@@ -225,6 +226,27 @@ public class CalendarActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_INSERT);
         intent.setData(CalendarContract.Events.CONTENT_URI);
         intent.putExtra(CalendarContract.Events.TITLE, eventTitle);
+
+        // Parse the selectedDate string into a Date object
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyy");
+        try {
+            Date date = sdf.parse(selectedDate);
+
+            // Set the time to midnight (00:00)
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+
+            // Set the event start date
+            intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calendar.getTimeInMillis());
+            // Set the event end date (optional, you can adjust as needed)
+            intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, calendar.getTimeInMillis());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         startActivity(intent);
     }
 

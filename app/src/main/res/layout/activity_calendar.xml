@@ -48,17 +48,6 @@
         app:srcCompat="@drawable/white_home_icon_png_9" />
 
     <ImageButton
-        android:id="@+id/calendar_export"
-        android:layout_width="65dp"
-        android:layout_height="63dp"
-        android:layout_marginStart="64dp"
-        android:background="@color/cyan"
-        android:contentDescription="calendarexport"
-        app:layout_constraintBottom_toBottomOf="@+id/calendar_toolBar"
-        app:layout_constraintStart_toEndOf="@+id/calendar_tv"
-        app:srcCompat="@drawable/common_full_open_on_phone" />
-
-    <ImageButton
         android:id="@+id/addEvent_button"
         android:layout_width="65dp"
         android:layout_height="61dp"
@@ -89,6 +78,17 @@
         app:layout_constraintBottom_toTopOf="@+id/addEvent_button"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <Button
+        android:id="@+id/calendar_export"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/white"
+        android:text="Export"
+        android:textColor="@color/cyan"
+        app:layout_constraintBottom_toBottomOf="@+id/calendar_toolBar"
+        app:layout_constraintStart_toEndOf="@+id/calendar_tv" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
