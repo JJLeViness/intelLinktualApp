@@ -5,9 +5,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.util.Log;
@@ -48,10 +53,13 @@ public class CalendarActivity extends AppCompatActivity {
 
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
+        createNotificationChannel();
 
         ImageButton calendarHome = findViewById(R.id.calendar_home);
         CalendarView eventCalendar = findViewById(R.id.meeting_cv);
@@ -145,6 +153,25 @@ public class CalendarActivity extends AppCompatActivity {
         });
     }
 
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create a unique ID for the notification channel
+            String channelId = "Your_Channel_Id";
+            // Set the user-visible name of the notification channel
+            CharSequence channelName = "Your_Channel_Name";
+            // Importance level for notifications posted to this channel
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            // Create the notification channel
+            NotificationChannel notificationChannel = new NotificationChannel(channelId, channelName, importance);
+            // Get the system notification manager
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            // Register the notification channel with the system
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
+    }
+
     private void updateEventList(String selectedDate) {
         List<String> events = getEvents(selectedDate);
         eventAdapter.clear();
@@ -175,8 +202,40 @@ public class CalendarActivity extends AppCompatActivity {
         editor.putString(selectedDate, eventsJson);
         editor.apply();
 
+        //scheduleNotification(eventName, eventTime);
+
         Log.d("CalendarActivity", "Event added to date " + selectedDate + ": " + eventName);
     }
+
+    private void scheduleNotification(String eventName, String eventTime) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent notificationIntent = new Intent(this, NotificationReceiver.class);
+        notificationIntent.putExtra("eventName", eventName); // Pass event details to receiver
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE); // Add FLAG_IMMUTABLE
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.add(Calendar.HOUR, -1); // Notify 1 hour before the event
+        long notificationTime = calendar.getTimeInMillis();
+
+        // Schedule the notification
+        if (alarmManager != null) {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, notificationTime, pendingIntent);
+            Log.d("Notification", "Notification scheduled for event: " + eventName);
+        } else {
+            Log.e("Notification", "Failed to schedule notification for event: " + eventName);
+        }
+    }
+
+
+
+
+    private int generateUniqueRequestCode() {
+        return (int) System.currentTimeMillis();
+    }
+
+
+
     private List<String> getEvents(String selectedDate) {
         String eventsJson = sharedPreferences.getString(selectedDate, null);
         if (eventsJson != null) {

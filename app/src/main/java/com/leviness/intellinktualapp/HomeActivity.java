@@ -2,17 +2,26 @@ package com.leviness.intellinktualapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 public class HomeActivity extends AppCompatActivity{
 
+    public static final String CHANNEL_ID = "my_channel";
+    public static final String CHANNEL_NAME = "My Channel";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity);
+
+        createNotificationChannel();
 
         //declaring buttons
         Button documents = findViewById(R.id.button_Documents);
@@ -42,6 +51,8 @@ public class HomeActivity extends AppCompatActivity{
            }
 
        });
+
+
        calendar.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
@@ -60,6 +71,19 @@ public class HomeActivity extends AppCompatActivity{
 
 
 
-
     }
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            channel.setDescription("My Notification Channel");
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
 }
